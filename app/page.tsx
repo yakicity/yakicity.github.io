@@ -20,7 +20,7 @@ export default function Home() {
             {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/> */}
             <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/>
             <div className="text-center lg:w-2/3 w-full">
-              <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima   小島 悠介</h1>
+              <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
                 <div className="container px-5 py-24 mx-auto text-black-600 body-font overflow-hidden">
                   <div className="-my-8 divide-y-2 divide-gray-300">
                     <div className="py-8 flex flex-wrap md:flex-nowrap">
