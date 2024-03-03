@@ -1,5 +1,5 @@
 import Image from 'next/image'
-// import mypic from "app/picture/mypicture.png";
+import mypic from "@/public/mypicture.png";
 // import tsIconSrc from "app/picture/icons/ts.png";
 // import javaIconSrc from "app/picture/icons/java.png";
 // import pythonIconSrc from "app/picture/icons/python.png";
@@ -10,14 +10,15 @@ import Image from 'next/image'
 // import cppIconSrc from "app/picture/icons/cpp.png";
 // import processingIconSrc from "app/picture/icons/processing.png";
 // import ueIconSrc from "app/picture/icons/ue.svg";
-import {LanguageCard} from "./components/about/languageCard";
+// import {LanguageCard} from "./components/about/languageCard";
 
 export default function Home() {
   return (
       <div>
         <section className="body-font">
           <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/>
+            {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/> */}
+            <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/>
             <div className="text-center lg:w-2/3 w-full">
               <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
                 <div className="container px-5 py-24 mx-auto text-black-600 body-font overflow-hidden">
@@ -49,7 +50,7 @@ export default function Home() {
                         }}
                         className="flex"
                       >
-                        <LanguageCard level={4} src={"/icons/python.png"}>
+                        {/* <LanguageCard level={4} src={"/icons/python.png"}>
                           Python
                         </LanguageCard>
                         <LanguageCard level={2} src={"/icons/unity.png"}>
@@ -69,7 +70,7 @@ export default function Home() {
                         </LanguageCard>
                         <LanguageCard level={1} src={"/icons/ts.png"}>
                           Solidity
-                        </LanguageCard>
+                        </LanguageCard> */}
                       </div>
                     </div>
                     <div className="py-8 flex flex-wrap md:flex-nowrap">

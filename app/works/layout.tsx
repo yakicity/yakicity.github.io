@@ -34,7 +34,7 @@ const PTSerif400 = PT_Serif({
 
 export default function RootLayout(props: {
     children: React.ReactNode;
-    modal: React.ReactNode;
+    // modal: React.ReactNode;
   }) {
     return (
 
@@ -45,7 +45,7 @@ export default function RootLayout(props: {
                     </h3>
                     <div>
                         {props.children}
-                        {props.modal}
+                        {/* {props.modal} */}
                     </div>
                 </div>
         </section>
