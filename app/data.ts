@@ -1,3 +1,5 @@
+// import fifa from "@/public/works/fifa.png"
+
 export type Work = {
     id: string;
     title: string;
@@ -14,6 +16,7 @@ export type Work = {
       description:
         "this is desctiption",
       imageSrc: "/works/fifa.png",
+      // imageSrc:{fifa},
       link : "https://github.com/yakicity/FIFA22/tree/main",
       abst: "this is abst",
     },
