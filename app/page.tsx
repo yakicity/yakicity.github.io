@@ -10,7 +10,7 @@ import mypic from "@/public/mypicture.png";
 // import cppIconSrc from "app/picture/icons/cpp.png";
 // import processingIconSrc from "app/picture/icons/processing.png";
 // import ueIconSrc from "app/picture/icons/ue.svg";
-// import {LanguageCard} from "./components/about/languageCard";
+import {LanguageCard} from "./components/about/languageCard";
 
 export default function Home() {
   return (
@@ -50,7 +50,7 @@ export default function Home() {
                         }}
                         className="flex"
                       >
-                        {/* <LanguageCard level={4} src={"/icons/python.png"}>
+                        <LanguageCard level={4} src={"/icons/python.png"}>
                           Python
                         </LanguageCard>
                         <LanguageCard level={2} src={"/icons/unity.png"}>
@@ -70,7 +70,7 @@ export default function Home() {
                         </LanguageCard>
                         <LanguageCard level={1} src={"/icons/ts.png"}>
                           Solidity
-                        </LanguageCard> */}
+                        </LanguageCard>
                       </div>
                     </div>
                     <div className="py-8 flex flex-wrap md:flex-nowrap">
