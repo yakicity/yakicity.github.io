@@ -17,8 +17,8 @@ export default function Home() {
       <div>
         <section className="body-font">
           <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/> */}
-            <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/>
+            <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/>
+            {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/> */}
             <div className="text-center lg:w-2/3 w-full">
               <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
                 <div className="container px-5 py-24 mx-auto text-black-600 body-font overflow-hidden">
