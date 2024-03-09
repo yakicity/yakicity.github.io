@@ -7,26 +7,46 @@ export type Work = {
     imageSrc: string;
     link: string;
     abst: string;
+    category:string[]
   };
 
   const data: Work[] = [
     {
       id: "1",
-      title: "Work 01",
-      description:
-        "this is desctiption",
+      title: "FIFA22選手分析",
+      description: "this is desctiption",
       imageSrc: "/works/fifa.png",
       // imageSrc:{fifa},
       link : "https://github.com/yakicity/FIFA22/tree/main",
-      abst: "this is abst",
+      abst: "FIFA22の選手能力値をスクレイピングし、主成分分析した。",
+      category: ["python"]
     },
     {
       id: "2",
-      title: "Work 02",
+      title: "BirdGame",
       description: "ここに説明が入ります",
-      imageSrc: "/works/fifa.png",
-      link : "https://github.com/yakicity/FIFA22/tree/main",
-      abst: "this is abst",
+      imageSrc: "/works/birdgame.png",
+      link : "https://github.com/yakicity/birdgame",
+      abst: "東工大サークルのハッカソンで作成した。自分は主にUnity内の処理を担当した。",
+      category: ["Unity","C#"]
+    },
+    {
+      id: "3",
+      title: "PianoTileGame",
+      description: "ここに説明が入ります",
+      imageSrc: "/works/pianotile.png",
+      link : "https://github.com/yakicity/piano",
+      abst: "Youtubeのピアノ動画から、ARピアノタイルゲームを作成するツールである。",
+      category: ["python","opencv"]
+    },
+    {
+      id: "4",
+      title: "TASCHOLA",
+      description: "ここに説明が入ります",
+      imageSrc: "/works/taschola.png",
+      link : "https://github.com/yakicity/piano",
+      abst: "東工大の授業でチーム開発したタスク管理アプリケーション。自分はフロントエンドを担当した。",
+      category: ["React","TypeScript"]
     },
   ];
 

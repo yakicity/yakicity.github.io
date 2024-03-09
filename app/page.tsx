@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import mypic from "@/public/mypicture.png";
+// import mypic from "@/public/mypicture.png";
 // import tsIconSrc from "app/picture/icons/ts.png";
 // import javaIconSrc from "app/picture/icons/java.png";
 // import pythonIconSrc from "app/picture/icons/python.png";
