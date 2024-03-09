@@ -14,7 +14,7 @@ export type Work = {
     {
       id: "1",
       title: "FIFA22選手分析",
-      description: "this is desctiption",
+      description: "機械学習とスクレイピングの練習に，FIFA22というサッカーゲームにおけるサッカー選手の能力値を用いました．",
       imageSrc: "/works/fifa.png",
       // imageSrc:{fifa},
       link : "https://github.com/yakicity/FIFA22/tree/main",
