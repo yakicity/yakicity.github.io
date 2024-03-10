@@ -8,13 +8,6 @@ export default function CardDetail({ data }: { data: Work }) {
         <div className="flex items-center justify-center flex-wrap mb-3">
           {/* <a href={data.link} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Source Code</a> */}
           {data.link ? (
-              // <span>
-              //   <a href={data.link} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline  inline-flex items-center md:mb-2 lg:mb-0">Source Code
-              //     <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-4 h-4 ml-2" viewBox="0 0 24 24">
-              //       <path d="M5 12h14M12 5l7 7-7 7"></path>
-              //     </svg>
-              //   </a>
-              // </span>
               <span>
               <a href={data.link} className="inline-flex mr-3 items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
               Source Code
@@ -28,9 +21,6 @@ export default function CardDetail({ data }: { data: Work }) {
               ""
             )}
           {data.movielink ? (
-              // <span>
-              //   <a href={data.movielink} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Youtube</a>
-              // </span>
               <span>
               <a href={data.movielink} className="inline-flex items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
               Youtube
@@ -45,41 +35,99 @@ export default function CardDetail({ data }: { data: Work }) {
             )}
         </div>
       <div className="flex justify-center">
-      <Image
-        alt=""
-        src={data.imageSrc}
-        height={450}
-        width={600}
-        className="col-span-2 mb-4"
-      />
+        <Image
+          alt=""
+          src={data.imageSrc[0]}
+          height={450}
+          width={600}
+          className="col-span-2 mb-4"
+        />
       </div>
       <div className="flex items-center justify-center flex-wrap ">
         {data.category.map((c,index) => (
           <span key={index} className="inline-block py-0.7 px-2 rounded bg-blue-700 text-white text-s font-medium tracking-widest mr-2 mb-1">{c}</span>
         ))}
       </div>
-      <div>
 
 
         <div className="text-left container px-5 py-12 mx-auto">
-            <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mb-[0.5rem]">
+          {data.description ? (
+            <div>
+              <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mb-[0.5rem]">
+                Description
+              </h3>
+              <p>{data.description}</p>
+            </div>
+            ) : (
+              ""
+            )
+          }
+          {data.motivation ? (
+            <div>
+              <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mt-6 mb-[0.5rem]">
                 Motivation
-            </h3>
-            <p>{data.motivation}</p>
-            <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mb-[0.5rem] mt-[1rem]">
+              </h3>
+              <p>{data.motivation}</p>
+            </div>
+            ) : (
+              ""
+            )
+          }
+          {data.implementation ? (
+            <div>
+              <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mt-6 mb-[0.5rem]">
                 Implementation
-            </h3>
-            <p>{data.implementation}</p>
-            <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mb-[0.5rem] mt-[1rem]">
-                Discussion
-            </h3>
-            <p>{data.discussion}</p>
-            {/* <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mb-[0.5rem] mt-[1rem]">
+              </h3>
+              <p>{data.implementation}</p>
+            </div>
+            ) : (
+              ""
+            )
+          }
+          {data.difficulty ? (
+            <div>
+              <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mt-6 mb-[0.5rem]">
                 Difficulty
-            </h3>
-            <p>{data.difficulty}</p> */}
+              </h3>
+              <p>{data.difficulty}</p>
+            </div>
+            ) : (
+              ""
+            )
+          }
+          {data.discussion ? (
+            <div>
+              <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mt-6 mb-[0.5rem]">
+                Discussion
+              </h3>
+              <p>{data.discussion}</p>
+            </div>
+            ) : (
+              ""
+            )
+          }
         </div>
+
+        {data.subImageSrc[0] ? (
+          <div>
+            {data.subImageSrc.map((img,index) => (
+            <div>
+            <div key={index} className="flex justify-center">
+              <Image
+              alt=""
+              src={img}
+              height={450}
+              width={600}
+              className="col-span-2 mb-2"
+              />
+            </div>
+              <h2 className="flex-wrap text-[1.0rem] text-center text-gray-700 mb-5">{data.subImageDescription[index]}</h2>
+            </div>
+          ))}
+          </div>
+            ) : (
+              ""
+            )}
       </div>
-    </div>
   );
 }

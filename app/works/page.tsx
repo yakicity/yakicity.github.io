@@ -12,7 +12,7 @@ export default function Works() {
         <div className="container px-5 py-4 mx-auto">
         <div className="flex flex-wrap -m-4">
         {data.map(({ id, title, imageSrc, abst,category}) => (
-          <Card key={id} id={id} title={title} imageSrc={imageSrc} abst={abst} category={category}></Card>
+          <Card key={id} id={id} title={title} imageSrc={imageSrc[0]} abst={abst} category={category}></Card>
         ))}
       </div>
       </div>
