@@ -19,7 +19,7 @@ export default function Card({
   return (
     <div className="p-4 md:w-1/3">
     <div className="h-full border-2 border-gray-500 border-opacity-60 rounded-lg overflow-hidden">
-    {/* <Link href={`/works/${id}`}> */}
+    <Link href={`/works/${id}`}>
       <div className="bg-white px-5 pt-5 pb-5 rounded-lg">
         <Image alt="" src={imageSrc} height={300} width={400} className="lg:h-48 md:h-36 w-full object-cover object-center"/>
         <div className="p-6">
@@ -57,7 +57,7 @@ export default function Card({
           {/* </div>
          </div> */}
       </div>
-    {/* </Link> */}
+    </Link>
     </div>
     </div>
   );
