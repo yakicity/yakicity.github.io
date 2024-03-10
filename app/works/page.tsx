@@ -13,7 +13,7 @@ export default function Works() {
         <div className="flex flex-wrap -m-4">
 
         {data.map(({ id, title, imageSrc, abst,category,link }) => (
-          <Card key={id} id={id} title={title} imageSrc={imageSrc} abst={abst} category={category} link={link}></Card>
+          <Card id={id} title={title} imageSrc={imageSrc} abst={abst} category={category} link={link}></Card>
         ))}
       </div>
         </div>
