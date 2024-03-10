@@ -28,8 +28,8 @@ export default function Card({
           <p className="leading-relaxed mb-3">{abst}</p>
         </div>
         <div className="flex items-center flex-wrap ">
-          {category.map((c) => (
-            <span className="inline-block py-1 px-2 rounded bg-indigo-50 text-gray-1000 text-s font-medium tracking-widest mr-2">{c}</span>
+          {category.map((c,index) => (
+            <span key={index} className="inline-block py-1 px-2 rounded bg-indigo-50 text-gray-1000 text-s font-medium tracking-widest mr-2">{c}</span>
           ))}
         </div>
         <div>
