@@ -111,8 +111,8 @@ export default function CardDetail({ data }: { data: Work }) {
         {data.subImageSrc[0] ? (
           <div>
             {data.subImageSrc.map((img,index) => (
-            <div>
-            <div key={index} className="flex justify-center">
+            <div key={index} >
+            <div className="flex justify-center">
               <Image
               alt=""
               src={img}
