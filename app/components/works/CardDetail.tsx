@@ -5,7 +5,7 @@ export default function CardDetail({ data }: { data: Work }) {
   return (
     <div className="p-10 w-full bg-white rounded-lg flex flex-col border-gray-600 border-2">
       <h1 className="text-[2rem] text-gray-900 mb-3 text-center">{data.title}</h1>
-        <div className="flex items-center justify-center flex-wrap mb-3">
+        <div className="flex items-center justify-center flex-wrap mb-3 md-3">
           {/* <a href={data.link} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Source Code</a> */}
           {data.link ? (
               <span>
