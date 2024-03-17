@@ -92,7 +92,7 @@ export type Work = {
     {
       id: "5",
       title: "数独を解く",
-      description: "数独・nクイーン問題を解くプログラムを作成した．",
+      description: "数独・nクイーン問題を解くプログラム.",
       motivation: "",
       implementation: "",
       difficulty: "",

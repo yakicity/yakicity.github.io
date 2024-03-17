@@ -12,7 +12,8 @@ export type Paper = {
     imageSrc: string[];
     subImageSrc: string[];
     subImageDescription: string[];
-    link: string;
+    paperlink: string;
+    slidelink: string;
     track: string;
     abst: string;
     category:string[]
@@ -27,10 +28,11 @@ export type Paper = {
       implementation: "",
       difficulty: "",
       discussion: "",
-      imageSrc: ["/works/noimage.png"],
+      imageSrc: ["/works/paper/wiss.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      link : "https://www.wiss.org/WISS2023Proceedings/data/2-B03.pdf",
+      paperlink : "https://www.wiss.org/WISS2023Proceedings/data/2-B03.pdf",
+      slidelink : "",
       track : "poster",
       abst: "",
       category: ["python","unity"],
@@ -46,8 +48,26 @@ export type Paper = {
       imageSrc: ["/works/noimage.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      link : "",
+      paperlink : "",
+      slidelink : "",
       track : "short paper",
+      abst: "",
+      category: ["python","unity"],
+    },
+    {
+      id: "3",
+      title: "MR縫合訓練システムにおける器具姿勢教示手法",
+      description: "",
+      conference: "卒論",
+      implementation: "",
+      difficulty: "",
+      discussion: "",
+      imageSrc: ["/works/paper/sotsuron.png"],
+      subImageSrc: [""],
+      subImageDescription: [""],
+      paperlink :"https://drive.google.com/file/d/1fv9Iytc3qpwXk5-Zul9-hZ9HbAL3Jovv/view?usp=drive_link",
+      slidelink : "",
+      track : "",
       abst: "",
       category: ["python","unity"],
     },

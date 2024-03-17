@@ -13,9 +13,9 @@ export default function CardDetail({ data }: { data: Paper }) {
       <h1 className="text-[2rem] text-gray-900 mb-3 text-center">{data.title}</h1>
         <div className="flex items-center justify-center flex-wrap mb-3">
           {/* <a href={data.githublink} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Source Code</a> */}
-          {data.link ? (
+          {data.paperlink ? (
               <span>
-              <a href={data.link} className="inline-flex mr-3 mb-2 items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
+              <a href={data.paperlink} className="inline-flex mr-3 mb-2 items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
               link
               <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -33,7 +33,7 @@ export default function CardDetail({ data }: { data: Paper }) {
           src={data.imageSrc[0]}
           height={450}
           width={600}
-          className="col-span-2 mb-4"
+          className="lg:w-full col-span-2 mb-4"
         />
       </div>
       <div className="flex items-center justify-center flex-wrap ">
