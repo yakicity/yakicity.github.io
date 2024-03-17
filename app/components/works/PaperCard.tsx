@@ -22,7 +22,7 @@ export default function PaperCard({
     <Link href={`/works/paper${id}`}>
       <div className="bg-white px-5 pt-5 pb-5 rounded-lg">
         <div className="flex items-center flex-wrap">
-          <span className="inline-block py-1 px-2 rounded bg-purple-50 text-gray-900 text-lg font-medium tracking-widest mr-2 mb-2">{conference}-{track}</span>
+          <span className="inline-block py-1 px-2 rounded bg-purple-50 text-gray-900 text-lg font-medium tracking-widest mr-2 mb-3">{conference}-{track}</span>
           {/* <span className="inline-block py-1 px-2 rounded bg-purple-50 text-purple-500 text-s font-medium tracking-widest mr-2 mb-2">{track}</span> */}
             {/* <span className="inline-block py-1 px-2 rounded bg-blue-600 text-white text-s font-medium tracking-widest mr-2 mb-2">{conference}</span>
             <span className="inline-block py-1 px-2 rounded bg-blue-600 text-white text-s font-medium tracking-widest mr-2 mb-2">{track}</span> */}
