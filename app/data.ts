@@ -12,8 +12,9 @@ export type Work = {
     imageSrc: string[];
     subImageSrc: string[];
     subImageDescription: string[];
-    link: string;
+    githublink: string;
     movielink: string;
+    detaillink: string[];
     abst: string;
     category:string[]
   };
@@ -30,8 +31,9 @@ export type Work = {
       imageSrc: ["/works/fifa.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      link : "https://github.com/yakicity/FIFA22/tree/main",
+      githublink : "https://github.com/yakicity/FIFA22/tree/main",
       movielink : "",
+      detaillink: [""],
       abst: "FIFA22の選手能力値をスクレイピングし、主成分分析した。",
       category: ["python", "BeautifulSoup"],
 
@@ -47,9 +49,10 @@ export type Work = {
       imageSrc: ["/works/birdgame/birdgame1.png"],
       subImageSrc: ["/works/birdgame/birdgame2.png","/works/birdgame/birdgame3.png"],
       subImageDescription: ["3D視点","2D視点"],
-      link : "https://github.com/yakicity/birdgame",
+      githublink : "https://github.com/yakicity/birdgame",
       movielink : "https://www.youtube.com/watch?v=TnUMHDJzIXw",
-      abst: "東工大サークルのハッカソンで作成した。自分は主にUnity内の処理を担当した。",
+      detaillink: [""],
+      abst: "東工大サークルのハッカソンで作成.主にUnity内の処理を担当.",
       category: ["Unity","C#"]
     },
     {
@@ -63,26 +66,62 @@ export type Work = {
       imageSrc: ["/works/pianotile.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      link : "https://github.com/yakicity/piano",
+      githublink : "https://github.com/yakicity/piano",
       movielink : "https://www.youtube.com/watch?v=qT1tfNehLds",
+      detaillink: [""],
       abst: "Youtubeのピアノ動画から、ARピアノタイルゲームを作成するツールである。",
       category: ["python","opencv"]
     },
     {
       id: "4",
       title: "TASCHOLA",
-      description: "None",
-      motivation: "None",
-      implementation: "None",
-      difficulty: "None",
-      discussion: "None",
-      imageSrc: ["/works/taschola.png"],
+      description: "東工大の授業でチーム開発したタスク管理アプリケーション。自分はフロントエンドを担当した。",
+      motivation: "",
+      implementation: "Next.js・TypeScript・Tailwind CSSを用いた．",
+      difficulty: "",
+      discussion: "",
+      imageSrc: ["/works/taschola/taschola1.png"],
+      subImageSrc: ["/works/taschola/taschola2.png","/works/taschola/taschola3.png","/works/taschola/taschola4.png","/works/taschola/taschola5.png"],
+      subImageDescription: ["ログインページ","サインアップページ","新規タスク作成ページ","タスクページ"],
+      githublink : "https://github.com/yakicity/piano",
+      movielink : "",
+      detaillink: [""],
+      abst: "ログイン機能付きのタスク管理アプリである．",
+      category: ["Next.js","TypeScript"]
+    },
+    {
+      id: "5",
+      title: "数独を解く",
+      description: "",
+      motivation: "",
+      implementation: "",
+      difficulty: "",
+      discussion: "",
+      imageSrc: ["/works/noimage.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      link : "https://github.com/yakicity/piano",
+      githublink : "https://github.com/yakicity/minisat_python",
       movielink : "",
-      abst: "東工大の授業でチーム開発したタスク管理アプリケーション。自分はフロントエンドを担当した。",
-      category: ["React","TypeScript"]
+      detaillink: [""],
+      abst: "数独・nクイーン問題を解くプログラム．",
+      category: ["Python"]
+    },
+    {
+      id: "6",
+      title: "Quorumでネットワーク作成",
+      description: "インターン先で行ったブロックチェーンの調査として，Quorumによる社内ネットワークの作成と，簡単なトランザクションの発行を行った．",
+      motivation: "",
+      implementation: "ネットワーク作成にはQuorum，プライベートトランザクションに対するアクセス制御にはTessera，コントラクトはSolidityを使用した．",
+      difficulty: "jsonファイルに1行でも抜けがあるだけで，うまくトランザクションが発行されない．",
+      discussion: "",
+      imageSrc: ["/detail/quorum_detail/Untitled 2.png"],
+      subImageSrc: [""],
+      subImageDescription: [""],
+      githublink : "https://github.com/yakicity/quorum_raft",
+      movielink : "",
+      detaillink: ["/works/6/detail"],
+      abst: "Quorumによる社内ネットワークの作成と，簡単なトランザクションの発行.",
+      category: ["Solidity", "JavaScript"]
     },
   ];
 
