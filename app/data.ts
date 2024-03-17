@@ -87,12 +87,12 @@ export type Work = {
       movielink : "",
       detaillink: [""],
       abst: "ログイン機能付きのタスク管理アプリである．",
-      category: ["Next.js","TypeScript"]
+      category: ["Next.js","TypeScript","Tailwind CSS"]
     },
     {
       id: "5",
       title: "数独を解く",
-      description: "",
+      description: "数独・nクイーン問題を解くプログラムを作成した．",
       motivation: "",
       implementation: "",
       difficulty: "",
