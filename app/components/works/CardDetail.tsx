@@ -5,11 +5,11 @@ export default function CardDetail({ data }: { data: Work }) {
   return (
     <div className="p-10 w-full bg-white rounded-lg flex flex-col border-gray-600 border-2">
       <h1 className="text-[2rem] text-gray-900 mb-3 text-center">{data.title}</h1>
-        <div className="flex items-center justify-center flex-wrap mb-3 md-3">
-          {/* <a href={data.link} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Source Code</a> */}
-          {data.link ? (
+        <div className="flex items-center justify-center flex-wrap mb-3">
+          {/* <a href={data.githublink} className="font-medium py-1 px-2 text-blue-600 dark:text-blue-500 hover:underline">Source Code</a> */}
+          {data.githublink ? (
               <span>
-              <a href={data.link} className="inline-flex mr-3 items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
+              <a href={data.githublink} className="inline-flex mr-3 items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
               Source Code
               <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -33,6 +33,22 @@ export default function CardDetail({ data }: { data: Work }) {
             ) : (
               ""
             )}
+          {data.detaillink[0] ? (
+            <div>
+              {data.detaillink.map((link,index) => (
+              <span>
+              <a href={link} className="inline-flex items-center px-4 py-2 text-s font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700">
+              Youtube
+              <svg className="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+              </svg>
+              </a>
+              </span>
+            ))}
+            </div>
+              ) : (
+                ""
+              )}
         </div>
       <div className="flex justify-center">
         <Image
@@ -116,12 +132,12 @@ export default function CardDetail({ data }: { data: Work }) {
               <Image
               alt=""
               src={img}
-              height={450}
-              width={600}
+              height={600}
+              width={800}
               className="col-span-2 mb-2"
               />
             </div>
-              <h2 className="flex-wrap text-[1.0rem] text-center text-gray-700 mb-5">{data.subImageDescription[index]}</h2>
+              <h2 className="flex-wrap text-[0.8rem] text-center text-gray-700 mb-10">{data.subImageDescription[index]}</h2>
             </div>
           ))}
           </div>

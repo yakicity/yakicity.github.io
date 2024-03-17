@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Quorum(Raft)</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+</style></head><body><article id="4b97578d-357a-44ce-bb14-0d154d8024c1" class="page sans"><header><h1 class="page-title">Quorum(Raft)</h1><p class="page-description"></p></header><div class="page-body"><p id="14b462aa-0b2b-4aa2-9fa3-9b3903c604be" class="">
+</p><p id="f9cc9353-e42a-49a1-a6e4-0afb3c5f5b70" class="">実行環境：Ubuntu20.04<br/>実行日時：<br/></p><p id="665827e2-51a4-47ce-a335-8e7a6f89c847" class="">
+</p><p id="79a6dfe0-04fe-49d1-ac1e-9b9c22bfec50" class="">
+</p><p id="b53082f6-e4a2-41c6-955d-746b5c29ff77" class="">以下の内容をはじめからやっていけば実行できるはずで、node1とnode2を作った際の最終的なディレクトリ構成はこんな感じ</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="cf6a983c-dbb6-4f57-9226-9f531c10bf78" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ dir
+contracts     new-node-1t  node.log   nodekey    pass                 start_tessera.sh  static-nodes.json  tessera2.log
+genesis.json  new-node-2   node1.log  nodekey2   private-contract.js  startnode1.sh     tessera.jar
+new-node-1    new-node-2t  node2.log  nohup.out  start.sh             startnode2.sh     tessera1.log
+
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch/contracts$ dir
+SingleNumRegister.sol  SingleNumRegister_sol_SingleNumRegister.abi  SingleNumRegister_sol_SingleNumRegister.bin
+
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch/new-node-1t$ dir
+config.json  db1.mv.db  db1.trace.db  new-node-1.key  new-node-1.pub  pass
+
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch/new-node-1$ dir
+enode  geth  history  keystore  nodekey  quorum-raft-state  raft-snap  raft-wal  static-nodes.json</code></pre><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">tessera関連</summary><div class="indented"><p id="f6fc4f32-c5cd-4384-8bea-c3fde5225dd0" class="">
+</p><p id="e7072625-d613-47a4-8d21-ef939403d30d" class="">以下のような記事（<a href="https://qiita.com/utom/items/11b3e35a7f97dd98c5e6">https://qiita.com/utom/items/11b3e35a7f97dd98c5e6</a>）がある通りJDKが必要かもしれない。（これを試した時はJDKがたまたまUbuntuに入っていたためうまく実行できた）</p><figure id="a64d2212-e898-4bf5-8261-eac6983f8a9a" class="image" style="text-align:center"><a href="quorum_detail/Untitled.png"><img style="width:528px" src="quorum_detail/Untitled.png"/></a></figure><p id="48b70a08-ba7b-4a71-93bf-a8191d70f170" class="">うまく実行できた時のjavaのバージョン</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="78dac12a-3414-4388-95ba-9978549dec02" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~$ java --version
+openjdk 11.0.17 2022-10-18
+OpenJDK Runtime Environment (build 11.0.17+8-post-Ubuntu-1ubuntu220.04)
+OpenJDK 64-Bit Server VM (build 11.0.17+8-post-Ubuntu-1ubuntu220.04, mixed mode, sharing)</code></pre><p id="fd6ca2fe-3f33-4b5f-95f2-ef88fbd0cba8" class="">
+</p><p id="6a2e62e2-5592-443b-8b17-92d434e74499" class="">青と黄色：一つ目のノード作成に必要</p><p id="ff381468-3a93-4ba1-8894-67dd0d5b9a25" class="">黄色：二つ目以降のノード作成にも必要</p><figure id="cd96c8a7-d1ed-401a-9702-a3263fe9bc03" class="image" style="text-align:center"><a href="quorum_detail/Untitled%201.png"><img style="width:200px" src="quorum_detail/Untitled%201.png"/></a></figure><h2 id="e2212d66-7caf-4fcd-81c3-72104712d5c7" class="">(quorumのインストールと)tessera.jarのダウンロードとリネーム</h2><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="6c575500-2f03-459e-a4cc-e5eb0ed0ea62" class="code"><code class="language-Plain Text">//quorumのインストールとパスの登録（必要なわけではないがどのみち次の章「quorum関連」で行う）
+$ git clone https://github.com/ConsenSys/quorum.git
+$ cd quorum
+$ make all
+$ export PATH=/home/yusuke/intern/quorum/build/bin:$PATH
+
+//tessera.jarのダウンロードとリネーム
+$ wget https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.4/tessera-app-0.10.4-app.jar
+$ mv tessera-app-0.10.4-app.jar tessera.jar</code></pre><p id="a90ad811-82db-4303-a6a8-58db425ca969" class="">
+</p><h2 id="b41209c9-9a70-463d-a3d8-bd24119fcc9a" class="">keyの作成</h2><p id="c6fae9a5-866a-49d6-99d9-c0f1666e21f2" class="">tessera node1のディレクトリを作成、及び鍵の生成</p><p id="3a667a5f-0d2f-478b-a3b2-4337a607abe5" class="">今回はこのサイト（<a href="https://baasinfo.net/?p=3432">https://baasinfo.net/?p=3432</a>）に従い、fromscratchディレクトリ下にノードの作業ディレクトリを作成した。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="822d53c2-f0bd-4718-8ac5-14901e96a08b" class="code"><code class="language-Plain Text">$ mkdir fromscratch
+$ cd fromscratch
+$ mkdir new-node-1t
+$ cd new-node-1t
+$ java -jar ../tessera.jar -keygen -filename new-node-1</code></pre><p id="d2c764e8-4aea-4028-a137-83e148cbe47d" class="">
+</p><p id="db2bcc56-7db0-435d-906e-f11ec269b18e" class="">最後のコマンドを打つとパスワードを求めてくる。これはのちにconfig.jsonを作る際に必要になる。</p><p id="a9c8bbd8-ee61-4312-a8e7-c5b3174f2988" class="">今回はpasswordは<code>manchester1!</code></p><p id="f0455984-1fee-4f8d-ae3c-3efd32feaf67" class="">処理が終わると<code>new-node-1.key</code>と<code>new-node-1.pub</code>が作成されている。</p><p id="2668b4da-d300-4ab9-a706-51624edd127d" class="">
+</p><h2 id="fa0c72d8-9c95-40b0-9365-302925c26283" class="">configファイル作成</h2><p id="d86546c4-0c7e-45fb-8eb2-18535be4acac" class="">（<code>new-node-1t/config.json</code>）</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="792ac932-21d4-4a4b-bdcd-015ec807d2d1" class="code"><code class="language-Plain Text">$ touch config.json
+$ touch pass</code></pre><ul id="303b7d01-e83c-446d-98f1-a1099b68797e" class="toggle"><li><details open=""><summary>config.json(<code>yourpath</code>の部分を変更する必要がある)</summary><p id="84cd01ab-54e0-4e30-a656-f56515d25f8c" class="">今回はこれを作る当初からネットワークで接続するノードは二つと決めていたため、<code>peer</code>には二つ<code>url</code>が入っている。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1f13cda5-fa0e-4236-9345-86b22ae6b9a0" class="code"><code class="language-Plain Text">{
+   &quot;useWhiteList&quot;: false,
+   &quot;jdbc&quot;: {
+       &quot;username&quot;: &quot;sa&quot;,
+       &quot;password&quot;: &quot;&quot;,
+       &quot;url&quot;: &quot;jdbc:h2:/yourpath/new-node-1t/db1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0&quot;,
+       &quot;autoCreateTables&quot;: true
+   },
+   &quot;serverConfigs&quot;:[
+       {
+           &quot;app&quot;:&quot;ThirdParty&quot;,
+           &quot;enabled&quot;: true,
+           &quot;serverAddress&quot;: &quot;http://localhost:9081&quot;,
+           &quot;communicationType&quot; : &quot;REST&quot;
+       },
+       {
+           &quot;app&quot;:&quot;Q2T&quot;,
+           &quot;enabled&quot;: true,
+            &quot;serverAddress&quot;:&quot;unix:/yourpath/new-node-1t/tm.ipc&quot;,
+           &quot;communicationType&quot; : &quot;REST&quot;
+       },
+       {
+           &quot;app&quot;:&quot;P2P&quot;,
+           &quot;enabled&quot;: true,
+           &quot;serverAddress&quot;:&quot;http://localhost:9001&quot;,
+           &quot;sslConfig&quot;: {
+               &quot;tls&quot;: &quot;OFF&quot;
+           },
+           &quot;communicationType&quot; : &quot;REST&quot;
+       }
+   ],
+   &quot;peer&quot;: [
+       {
+           &quot;url&quot;: &quot;http://localhost:9001&quot;
+       },
+       {
+           &quot;url&quot;: &quot;http://localhost:9003&quot;
+       }
+   ],
+   &quot;keys&quot;: {
+       &quot;passwords&quot;: [],
+       &quot;keyData&quot;: [
+           {
+               &quot;privateKeyPath&quot;: &quot;/yourpath/new-node-1t/new-node-1.key&quot;,
+               &quot;publicKeyPath&quot;: &quot;/yourpath/new-node-1t/new-node-1.pub&quot;
+           }
+       ]
+   },
+   &quot;alwaysSendTo&quot;: []
+}</code></pre></details></li></ul><ul id="5d416523-9c8e-445c-a82c-aff08c0c4481" class="toggle"><li><details open=""><summary>pass(<code>&lt;new-node-1t作成時に入力したパスワード&gt;</code>の部分を変更する必要がある)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b5551b8b-0eb9-4472-b8a1-14b227bc3b1e" class="code"><code class="language-Plain Text">&lt;new-node-1t作成時に入力したパスワード&gt;</code></pre></details></li></ul><ul id="367def19-572a-4791-a8dd-6ee5725101c9" class="toggle"><li><details open=""><summary>config.json(この資料作成時の例)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ba11162f-ba1c-4878-b5be-c99c0bc7fc36" class="code"><code class="language-JSON">{
+  &quot;useWhiteList&quot;: false,
+  &quot;jdbc&quot;: {
+    &quot;username&quot;: &quot;sa&quot;,
+    &quot;password&quot;: &quot;&quot;,
+    &quot;url&quot;: &quot;jdbc:h2:/home/yusuke/intern/quorum/fromscratch/new-node-1t/db1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0&quot;,
+    &quot;autoCreateTables&quot;: true
+  },
+  &quot;serverConfigs&quot;: [
+    {
+      &quot;app&quot;: &quot;ThirdParty&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;http://localhost:9081&quot;,
+      &quot;communicationType&quot;: &quot;REST&quot;
+    },
+    {
+      &quot;app&quot;: &quot;Q2T&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;unix:/home/yusuke/intern/quorum/fromscratch/new-node-1t/tm.ipc&quot;,
+      &quot;communicationType&quot;: &quot;REST&quot;
+    },
+    {
+      &quot;app&quot;: &quot;P2P&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;http://localhost:9001&quot;,
+      &quot;sslConfig&quot;: {
+        &quot;tls&quot;: &quot;OFF&quot;
+      },
+      &quot;communicationType&quot;: &quot;REST&quot;
+    }
+  ],
+  &quot;peer&quot;: [
+    {
+      &quot;url&quot;: &quot;http://localhost:9001&quot;
+    },
+    {
+      &quot;url&quot;: &quot;http://localhost:9003&quot;
+    }
+  ],
+  &quot;keys&quot;: {
+    &quot;passwordFile&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-1t/pass&quot;,
+    &quot;keyData&quot;: [
+      {
+        &quot;privateKeyPath&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-1t/new-node-1.key&quot;,
+        &quot;publicKeyPath&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-1t/new-node-1.pub&quot;
+      }
+    ]
+  },
+  &quot;alwaysSendTo&quot;: []
+}</code></pre></details></li></ul><ul id="0a3ce344-761e-4a2e-ae40-55f4b1fab7dc" class="toggle"><li><details open=""><summary>pass(この資料作成時の例)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="53c5a644-d1f7-480b-b863-1ed31b8c5c9e" class="code"><code class="language-Plain Text">manchester1!</code></pre></details></li></ul><p id="c3c8adba-1403-4453-990e-9502b252a283" class="">
+</p><h2 id="e063e6c4-c3f8-4d9d-8539-74886644a447" class="">keyの作成、configファイル作成を<code>new-node-2t</code>についてもやる</h2><p id="1ecca481-5bd7-4184-a204-e60b31e4767f" class="">先ほどとほぼ同じでよい。</p><p id="aef36b80-a071-4817-b7f9-bcb073a62ae4" class="">正し、config.jsonとpassは変更する必要がある。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2b2ce624-21a6-4b4b-960d-2c8a3767d72f" class="code"><code class="language-Plain Text">$ mkdir new-node-2t
+$ cd new-node-2t
+$ java -jar ../tessera.jar -keygen -filename new-node-2
+$ touch config.json
+$ touch pass</code></pre><p id="9b644b60-866f-4cc1-84fc-d5053f9fe563" class="">config.jsonは<code>yourpath</code>以外にもポート番号等変わっているところがあるため、以下のファイルをコピーして<code>yourpath</code>を変更した方が良い。</p><ul id="1db3bcc7-76c9-4ef8-96bf-6242fd280137" class="toggle"><li><details open=""><summary>config.jsonの中身(<code>yourpath</code>の部分を変更する必要がある)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="22ed6757-e92b-4b2a-b75c-7194bc8a08ba" class="code"><code class="language-Plain Text">{
+   &quot;useWhiteList&quot;: false,
+   &quot;jdbc&quot;: {
+       &quot;username&quot;: &quot;sa&quot;,
+       &quot;password&quot;: &quot;&quot;,
+       &quot;url&quot;: &quot;jdbc:h2:yourpath/new-node-2t/db1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0&quot;,
+       &quot;autoCreateTables&quot;: true
+   },
+   &quot;serverConfigs&quot;:[
+       {
+           &quot;app&quot;:&quot;ThirdParty&quot;,
+           &quot;enabled&quot;: true,
+           &quot;serverAddress&quot;: &quot;http://localhost:9083&quot;,
+           &quot;communicationType&quot; : &quot;REST&quot;
+       },
+       {
+           &quot;app&quot;:&quot;Q2T&quot;,
+           &quot;enabled&quot;: true,
+            &quot;serverAddress&quot;:&quot;unix:/yourpath/new-node-2t/tm.ipc&quot;,
+           &quot;communicationType&quot; : &quot;REST&quot;
+       },
+       {
+           &quot;app&quot;:&quot;P2P&quot;,
+           &quot;enabled&quot;: true,
+           &quot;serverAddress&quot;:&quot;http://localhost:9003&quot;,
+           &quot;sslConfig&quot;: {
+               &quot;tls&quot;: &quot;OFF&quot;
+           },
+           &quot;communicationType&quot; : &quot;REST&quot;
+       }
+   ],
+   &quot;peer&quot;: [
+       {
+           &quot;url&quot;: &quot;http://localhost:9001&quot;
+       },
+       {
+           &quot;url&quot;: &quot;http://localhost:9003&quot;
+       }
+   ],
+   &quot;keys&quot;: {
+       &quot;passwords&quot;: [],
+       &quot;keyData&quot;: [
+           {
+               &quot;privateKeyPath&quot;: &quot;/yourpath/new-node-2t/new-node-2.key&quot;,
+               &quot;publicKeyPath&quot;: &quot;/yourpath/new-node-2t/new-node-2.pub&quot;
+           }
+       ]
+   },
+   &quot;alwaysSendTo&quot;: []
+}</code></pre></details></li></ul><ul id="cba6b664-5ef1-422d-8e97-02bb2c24d53a" class="toggle"><li><details open=""><summary>config.jsonの中身(この資料作成時の例)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="171d504c-58ff-441b-90f0-f339729fef6f" class="code"><code class="language-JSON">{
+  &quot;useWhiteList&quot;: false,
+  &quot;jdbc&quot;: {
+    &quot;username&quot;: &quot;sa&quot;,
+    &quot;password&quot;: &quot;&quot;,
+    &quot;url&quot;: &quot;jdbc:h2:/home/yusuke/intern/quorum/fromscratch/new-node-2t/db1;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0&quot;,
+    &quot;autoCreateTables&quot;: true
+  },
+  &quot;serverConfigs&quot;: [
+    {
+      &quot;app&quot;: &quot;ThirdParty&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;http://localhost:9083&quot;,
+      &quot;communicationType&quot;: &quot;REST&quot;
+    },
+    {
+      &quot;app&quot;: &quot;Q2T&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;unix:/home/yusuke/intern/quorum/fromscratch/new-node-2t/tm.ipc&quot;,
+      &quot;communicationType&quot;: &quot;REST&quot;
+    },
+    {
+      &quot;app&quot;: &quot;P2P&quot;,
+      &quot;enabled&quot;: true,
+      &quot;serverAddress&quot;: &quot;http://localhost:9003&quot;,
+      &quot;sslConfig&quot;: {
+        &quot;tls&quot;: &quot;OFF&quot;
+      },
+      &quot;communicationType&quot;: &quot;REST&quot;
+    }
+  ],
+  &quot;peer&quot;: [
+    {
+      &quot;url&quot;: &quot;http://localhost:9001&quot;
+    },
+    {
+      &quot;url&quot;: &quot;http://localhost:9003&quot;
+    }
+  ],
+  &quot;keys&quot;: {
+    &quot;passwordFile&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-2t/pass&quot;,
+    &quot;keyData&quot;: [
+      {
+        &quot;privateKeyPath&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-2t/new-node-2.key&quot;,
+        &quot;publicKeyPath&quot;: &quot;/home/yusuke/intern/quorum/fromscratch/new-node-2t/new-node-2.pub&quot;
+      }
+    ]
+  },
+  &quot;alwaysSendTo&quot;: []
+}</code></pre></details></li></ul><ul id="e18c557c-b2e5-4e9b-bc82-81af8f7a2b60" class="toggle"><li><details open=""><summary>pass(この資料作成時の例)</summary><p id="f29dd955-052b-4635-8b21-948a164c2c20" class="">二つ目ではパスワードは以下。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f0cedf34-a1e9-495d-8382-fbe3a1c07830" class="code"><code class="language-Plain Text">manchester2!</code></pre><p id="67c18782-4dd0-4afd-a2b1-4cb8269f75db" class="">
+</p></details></li></ul><p id="07c90e8c-c722-4fad-8767-3eef762f4478" class="">
+</p><h2 id="0a92db0c-d22c-4274-ac81-973ec4995347" class="">tessera nodeの起動スクリプト作成と起動</h2><p id="82b4d8f8-2b6b-4b81-bc64-10542f57f8fa" class=""><code>new-node-1t</code>の一つ上の階層に戻ってからtessera nodeの起動スクリプトを作成する。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="66bd57b4-7394-450f-8a82-5fdb6ba3a0dd" class="code"><code class="language-Plain Text">$ touch start_tessera.sh</code></pre><ul id="634c5229-5ecf-4307-b477-aef1479d8b11" class="toggle"><li><details open=""><summary>start_tessera.sh</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="83927e2e-88a5-40b8-90e5-2a164dac562f" class="code"><code class="language-Plain Text">#!/bin/bash
+java -jar tessera.jar --configfile new-node-1t/config.json &gt;&gt; tessera1.log 2&gt;&amp;1 &amp;
+java -jar tessera.jar --configfile new-node-2t/config.json &gt;&gt; tessera2.log 2&gt;&amp;1 &amp;</code></pre></details></li></ul><p id="6eb32ed0-8940-4a67-b2be-f1f7f1ea91f3" class="">
+</p><p id="43ce9b92-7e32-45f6-8655-d320edf2fbe4" class="">tessera nodeの起動</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="77ef14da-e5ad-43b4-8b8b-07590beb00ba" class="code"><code class="language-Plain Text">$ chmod +x start_tessera.sh
+$ ./start_tessera.sh</code></pre><p id="ea05e5ad-3ad3-4ff3-bdb6-ff85d18bdb6c" class="">起動確認</p><p id="dfa56b34-6634-4837-91a8-a4ed576f167f" class="">例えばnew-node-1tの下には以下のファイルがあるはず</p><p id="25810bfc-5899-4a1c-9656-4ed0ea8edacd" class=""><code>config.json </code></p><p id="0bf8a3bb-b1e8-481e-b5ca-278b938f23c0" class=""><code>db1.trace.db </code></p><p id="c78a3962-11f3-40a8-8544-9e3cbfd411cc" class=""><code>db1.mv.db </code></p><p id="4c8c981d-c640-4b4d-b1f9-62789dc1f893" class=""><code>new-node-1.key </code></p><p id="0534da6e-a147-4d5d-a9ad-76359a9645fb" class=""><code>new-node-1.pub </code></p><p id="706fb2c3-1cf5-44e6-b234-03f2f43b6c10" class=""><code>pass </code></p><p id="2bbda0c5-40ed-4b2e-a973-e1f136eec4e9" class=""><code>tm.ipc</code></p><p id="98164e55-d92a-4cbc-ad74-611130d78489" class="">
+</p><p id="2c17405f-55d4-441e-a928-bd89ea35459f" class="">また、起動するとjavaと書かれたプロセスが二つ走っているはずである。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="147fb0ab-241e-45cf-b0e7-f80019a50645" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ chmod +x start_tessera.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$  ./start_tessera.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ps
+  PID TTY          TIME CMD
+   10 pts/0    00:00:03 bash
+ 4325 pts/0    00:00:42 java
+ 4326 pts/0    00:00:48 java
+ 4425 pts/0    00:00:05 ps</code></pre><p id="fd570739-c336-439e-8325-dd3f84401977" class="">
+</p><p id="43f0a3fb-c653-4f2f-854c-1f6499bcb88a" class="">ちなみに起動スクリプトを作らないなら、それぞれのディレクトリ（new-node-1tなど）で以下を実行する</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ddec5944-2960-4fe1-a204-655ad4bf4e16" class="code"><code class="language-Plain Text">$ java -jar ../tessera.jar --configfile config.json</code></pre><p id="f9981ce2-178d-4782-893f-ef765b758418" class="">
+</p><p id="522fe055-ece7-4e01-933c-b86a860d858e" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">quorum関連</summary><div class="indented"><p id="c2759650-6351-479d-9794-d9a35ffa100e" class=""><mark class="highlight-red"><strong>Quorumを本番利用するには複数ノードでネットワークを構築する必要。その場合には別のPCなどでノードを構築し、設定ファイルを共有し、お互いにネットワークを接続できる状態にするなどの設定が必要。</strong></mark></p><p id="969d3157-9669-4327-b28a-194bbc1a9741" class=""><mark class="highlight-red"><strong>このような面倒な設定を数分でできるようにしているのがAzure Blockchain ServiceなどのBaaS。ただ、今回はローカルでノードを作成しており、これらのサービスを使用してはいない。</strong></mark></p><p id="1d99571c-c7d8-4f82-8083-804aa65775ad" class="">
+</p><p id="34e75ca4-792a-493f-9ba5-a376c7960a91" class="">QuorumではRaft, IBFT, PoAの三種類のコンセンサスアルゴリズムが選べるが、今回は一番簡単なRaftを利用して構築する。</p><p id="eeb49a87-81bd-4810-b5e8-5ec2b4ec9432" class="">
+</p><p id="a8c4d184-4169-4867-b870-0ac671edf07c" class="">全体の手順</p><p id="16d4a722-1026-4274-a450-dd2694d9dbcc" class="">1．quorumの準備</p><p id="f64ae32c-65c1-4e05-9c87-2e15138132a3" class="">2．nodeの設定</p><p id="7f587201-d152-4b1f-874d-cb39f3a1ccba" class="">3．nodeの起動</p><p id="2b73fb70-9853-47a3-8146-490ba501cba3" class="">4．二つ目のノードを作成・ネットワークに追加</p><p id="e700e3fe-d0e8-418b-a951-269e67ad66c1" class="">
+</p><p id="e08022dc-5fcf-4744-bee4-5ae5c7f7b4d9" class="">青と黄色：一つ目のノード作成に必要</p><p id="d7282f04-2118-4746-9b11-fa71f5ae81c3" class="">黄色：二つ目以降のノード作成にも必要</p><figure id="9475bf38-117f-48b0-be4f-e869ecc06e08" class="image" style="text-align:center"><a href="quorum_detail/Untitled%202.png"><img style="width:528px" src="quorum_detail/Untitled%202.png"/></a></figure><details open=""><summary style="font-weight:600;font-size:1.5em;line-height:1.3;margin:0">1．quorumの準備</summary><div class="indented"><figure id="7cad7da7-b7c5-4d33-b9bc-a112de0d127e" class="image" style="text-align:center"><a href="quorum_detail/Untitled%203.png"><img style="width:192px" src="quorum_detail/Untitled%203.png"/></a></figure><p id="38a6248f-c882-4929-b190-bfeb8fe99c53" class="">Quorumのネットワークを構築するには、Quorumに対応したGethなどのツールをインストールする必要があります。</p><p id="4220e47f-e737-4793-827d-5dca9bc2f3d6" class="">まずはQuorumをインストール・ビルドしましょう。</p><p id="f4412190-a3c7-4827-8563-dc628900287b" class=""><strong>(tessera関連系の一番初めでやっている場合はする必要ない)</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4641f96f-28ce-42ba-a4ec-7d35a0c388b4" class="code"><code class="language-Plain Text">$ git clone https://github.com/ConsenSys/quorum.git
+$ cd quorum
+$ make all
+$ export PATH=/home/yusuke/intern/quorum/build/bin:$PATH</code></pre><p id="f7690aec-4195-400f-b495-58f9b98ce3ef" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.5em;line-height:1.3;margin:0">2．nodeの設定</summary><div class="indented"><figure id="5e3e52e8-5df9-4a98-9eac-74ff70cd619c" class="image" style="text-align:center"><a href="quorum_detail/Untitled%204.png"><img style="width:192px" src="quorum_detail/Untitled%204.png"/></a></figure><p id="5b691ae5-6879-455d-9bae-d82fe6c5840f" class="">Nodeは、Quorumのネットワークに参加する一つのマシーンです。Nodeを構築するためには、以下のものを作成します。</p><ol type="1" id="6b22ff31-e7b9-4527-89a8-80fb9ec3042b" class="numbered-list" start="1"><li>Nodeの作業ディレクトリ</li></ol><ol type="1" id="de754307-58e1-4f37-815c-83f722979785" class="numbered-list" start="2"><li>Nodeを管理するアカウント</li></ol><ol type="1" id="87f71159-b561-432c-94a3-b95fd7218466" class="numbered-list" start="3"><li>ブロックチェーンの初期状態を記述するジェネシスファイル</li></ol><ol type="1" id="70d7ad5b-f746-45b8-8c48-139ef7aa06da" class="numbered-list" start="4"><li>Nodeの鍵(nodekey)の作成</li></ol><ol type="1" id="04957ca8-8da3-4d4c-af29-427bd87fd63e" class="numbered-list" start="5"><li>ネットワーク設定ファイルstatic-nodes.jsonの作成</li></ol><p id="0c6bb6e4-6f0e-4041-bef4-5ad0c1df8fe1" class="">
+</p><h3 id="acf722ef-e961-4873-8efd-083f25f504db" class="">node作業ディレクトリの作成</h3><p id="39819435-da5b-4049-91a7-beee514ddd61" class="">上二つ（fromscratchディレクトリ作成まで）はtessera関連系でも同様のことを行っている。すでに作っていない場合のみ上２行は実行。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5540e555-f480-4728-9512-70cf2de3d0e3" class="code"><code class="language-Plain Text">$ mkdir fromscratch
+$ cd fromscratch
+$ mkdir new-node-1</code></pre><h3 id="d5827f35-1ab3-4daf-bbec-dc6a0053ed8b" class="">node管理アカウントの作成</h3><p id="25699288-6613-40a6-acac-4088c18cecf2" class="">パスフレーズの入力を求められるので、任意のパスフレーズを入力してください。このパスフレーズは重要なので保存して無くさないようにしてください。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b7e6892d-5010-4e0d-b592-01fcc04f21b8" class="code"><code class="language-Plain Text">$ geth --datadir new-node-1 account new</code></pre><p id="ca7c2367-7384-4e5e-ad78-678cd0d0fbbf" class="">passwordは<code>manchester!</code></p><ul id="0bdd32c3-693d-419c-a790-c6fd2d443161" class="toggle"><li><details open=""><summary>実行結果</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="989d3ed6-c527-41fe-9739-6fd0a36b9d8d" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth --datadir new-node-1 account new
+INFO [01-22|11:49:00.892] Maximum peer count                       ETH=50 LES=0 total=50
+INFO [01-22|11:49:00.893] Smartcard socket not found, disabling    err=&quot;stat /run/pcscd/pcscd.comm: no such file or directory&quot;
+Your new account is locked with a password. Please give a password. Do not forget this password.
+Password:
+Repeat password:
+
+Your new key was generated
+
+Public address of the key:   0xd12073ce3A32390c39b9c4a730D8b8686fFfa68C
+Path of the secret key file: new-node-1/keystore/UTC--2023-01-22T02-49-19.216866000Z--d12073ce3a32390c39b9c4a730d8b8686fffa68c
+
+- You can share your public address with anyone. Others need it to interact with you.
+- You must NEVER share the secret key with anyone! The key controls access to your funds!
+- You must BACKUP your key file! Without the key, it&#x27;s impossible to access account funds!
+- You must REMEMBER your password! Without the password, it&#x27;s impossible to decrypt the key!</code></pre></details></li></ul><h3 id="c91fe94a-bdfc-427d-9ba0-2fa26aedf499" class="">genesis.jsonファイルの作成</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="9d376c05-9b36-4dbb-8a6c-be497065d386" class="code"><code class="language-Plain Text">$ touch genesis.json</code></pre><p id="01e37997-4569-4fc8-9c1a-feb716af89a1" class="">以下のgenesis.jsonファイルをコピペし、allocの中のアドレス部分に先ほど作成した管理アカウントを作った際のアドレスを入れる。</p><p id="d1870c41-1466-475a-a551-fefccdbdb578" class="">
+</p><p id="4b7d6cc3-5c0f-4b4e-b4e1-9c2f02736460" class=""><mark class="highlight-red"><strong>注意！</strong></mark></p><p id="2178632c-1730-41ca-b5a7-ddf3dcd46b67" class=""><mark class="highlight-red"><strong>configの中に必ず</strong></mark><mark class="highlight-red"><strong><code> &quot;constantinopleBlock&quot;: 0,</code></strong></mark><mark class="highlight-red"><strong>をいれる。でないと後で行うトランザクションがうまくできない。</strong></mark></p><p id="e496c48a-0391-4448-8270-5a317649b055" class="">
+</p><ul id="25847731-682a-4b4d-9e5a-d7e21a5af6c3" class="toggle"><li><details open=""><summary>genesis.jsonの中身</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="17e1df7a-96c7-40cf-9f07-794a6064a17e" class="code"><code class="language-Plain Text">{
+  &quot;alloc&quot;: {
+　　 // 0xから実際のアドレスで置き換える
+    &quot;0xd12073ce3A32390c39b9c4a730D8b8686fFfa68C&quot;: {
+      &quot;balance&quot;: &quot;1000000000000000000000000000&quot;
+    }
+  },
+  &quot;coinbase&quot;: &quot;0x0000000000000000000000000000000000000000&quot;,
+  &quot;config&quot;: {
+    &quot;homesteadBlock&quot;: 0,
+    &quot;byzantiumBlock&quot;: 0,
+    &quot;constantinopleBlock&quot;: 0,
+    &quot;chainId&quot;: 10,
+    &quot;eip150Block&quot;: 0,
+    &quot;eip155Block&quot;: 0,
+    &quot;eip150Hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+    &quot;eip158Block&quot;: 0,
+    &quot;isQuorum&quot;: true
+  },
+  &quot;difficulty&quot;: &quot;0x0&quot;,
+  &quot;extraData&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;gasLimit&quot;: &quot;0xE0000000&quot;,
+  &quot;mixhash&quot;: &quot;0x00000000000000000000000000000000000000647572616c65787365646c6578&quot;,
+  &quot;nonce&quot;: &quot;0x0&quot;,
+  &quot;parentHash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;timestamp&quot;: &quot;0x00&quot;
+}</code></pre></details></li></ul><p id="bf6d2feb-8f4e-4ccc-939b-db3d6c390737" class="">
+</p><h3 id="cb30bc9d-3fe7-433a-9ac3-8fb876023225" class="">ノードKeyの作成</h3><p id="f06bb4c4-151f-4ba5-8c70-61444282f919" class="">Node Keyとは、ノードを識別するためのキーで、IDとして利用されます。bootnodeコマンドを利用してNode Keyを作成しましょう。<br/>作成した鍵は作業ディレクトリにも保存します。<br/></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b2c581e7-5773-4adf-b622-77aa5edc0f58" class="code"><code class="language-Plain Text">$ bootnode --genkey=nodekey
+$ cp nodekey new-node-1/</code></pre><p id="49f2e699-f505-44b9-8bdb-5aaa100a6b09" class="">以下のコマンドでenode（ethereum node）のIDとなるアドレスを確認。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="10d7dc49-1355-4060-9ebf-c20243653fcb" class="code"><code class="language-Plain Text">$ bootnode --nodekey=new-node-1/nodekey --writeaddress &gt; new-node-1/enode
+$ cat new-node-1/eno
+
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ cat new-node-1/enode
+0f2b20671318911937b92275b2690aaf4cf34aa180e296fcd88b8095dc225139c926c786f719cfe5f1f03bde5ee272cbd6be65ecbd934dfd9aab177816f643f3</code></pre><p id="74880d4b-1e58-4c72-b7d1-5c7ca306cfc6" class="">
+</p><h3 id="b2fc4c50-7748-4154-8bb2-6b823a8a8f36" class="">static-nodes.jsonの作成</h3><p id="64bf3108-a5c1-4d75-81b1-947a4a32a27d" class="">static-nodes.jsonはプライベートネットワークに初期に参加しているノードの一覧を記述するファイルです。</p><p id="5af15341-67de-4d81-8dec-a028816a454c" class="">ここに記述されていないノードは別途コマンドによってネットワークに追加する必要があります。</p><p id="2ad4ae88-a640-491c-8afd-bd5fc48f5955" class="">今回はノードは自分のノード一つだけなので、自分の設定を記述します。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bc9378d5-fade-4379-b5f9-75823b2ad95b" class="code"><code class="language-Plain Text">$ touch static-nodes.json</code></pre><ul id="c94d635b-7c23-4c15-b4c0-b62bb0624f54" class="toggle"><li><details open=""><summary>static-nodes.jsonの中身</summary><p id="8f75f7cc-4dc1-4da4-aadf-077fb6544336" class="">先ほどつくったenodeをこんな感じで代入する</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0939055e-bc2b-4ff5-83db-7d885688c963" class="code"><code class="language-Plain Text">[
+    &quot;enode://&lt;手順3で確認したenodeのハッシュ値@127.0.0.1:21000?discport=0&amp;raftport=50000&quot;
+]</code></pre><p id="6f350b83-5cc2-4ef5-9384-a586d8f07838" class="">今回はこんなかんじ。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2a2bbf12-6c48-43a2-bfdd-70b54a14aec1" class="code"><code class="language-Plain Text">[
+  &quot;enode://0f2b20671318911937b92275b2690aaf4cf34aa180e296fcd88b8095dc225139c926c786f719cfe5f1f03bde5ee272cbd6be65ecbd934dfd9aab177816f643f3@127.0.0.1:21000?discport=0&amp;raftport=50000&quot;
+]</code></pre></details></li></ul><p id="f36a7b31-1723-4588-91cf-107d1794d610" class="">これでnode起動準備が整った。</p><p id="968caed4-651a-4c7b-b669-d3a79a987fca" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.5em;line-height:1.3;margin:0">3．nodeの起動</summary><div class="indented"><figure id="c02e1c72-6b5c-4b7a-8699-54e47216c947" class="image" style="text-align:center"><a href="quorum_detail/Untitled%205.png"><img style="width:192px" src="quorum_detail/Untitled%205.png"/></a></figure><h3 id="a8eb17ef-53ef-497e-a790-59d006bfbfbc" class="">nodeの初期化</h3><p id="85ae685b-4c81-45c8-804a-63b675cc2591" class="">これまでの手順で作成した設定を元に、ノードを起動します。<br/>*注意 一度コンソールを閉じるなどによりPathが通っていないと失敗します。失敗する場合はもう一度quorumディレクトリで<br/></p><p id="98ff719b-d262-48bd-8151-67a078ccf3c9" class=""><code>export PATH=$(pwd)/build/bin:$PATH</code>を実行してください。</p><p id="74c48d2e-670c-4933-beef-b0ab670e5a2d" class="">
+</p><p id="79ae3cdd-a870-4b90-8b79-f6e1de90bff2" class="">まずはノードの設定を初期化する</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d4ca9fc4-8a28-49b0-9e91-4eea8f03480e" class="code"><code class="language-Plain Text">$ geth --datadir new-node-1 init genesis.json</code></pre><h3 id="10336b33-0994-405a-ae81-44d41199b321" class="">nodeの起動</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="9c6114a1-a9f1-4528-8912-707ecdcce311" class="code"><code class="language-Plain Text">$ touch startnode1.sh</code></pre><ul id="d53178a7-1adb-415a-b95e-6fde3397317f" class="toggle"><li><details open=""><summary>startnode1.shの中身(tessera使用時)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="8e415b89-7bd4-434f-af63-58069585e444" class="code"><code class="language-Plain Text">#!/bin/bash
+PRIVATE_CONFIG=/home/yusuke/intern/quorum/fromscratch/new-node-1t/tm.ipc nohup geth --datadir new-node-1 --nodiscover --verbosity 5 --networkid 31337 --raft --raftport 50000 --unlock 0xd12073ce3A32390c39b9c4a730D8b8686fFfa68C --password /home/yusuke/intern/quorum/fromscratch/pass --rpcaddr 0.0.0.0 --rpcport 22000 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft --emitcheckpoints --port 21000 &gt;&gt; node.log 2&gt;&amp;1 &amp;</code></pre></details></li></ul><ul id="3515c80f-6279-4801-a19c-7da568b4dfed" class="toggle"><li><details open=""><summary>startnode1.shの中身(tessera不使用時)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="937ef6f7-47c5-4188-8367-fcc1d7984535" class="code"><code class="language-Plain Text">#!/bin/bash
+PRIVATE_CONFIG=ignore nohup geth --datadir new-node-1 --nodiscover --verbosity 5 --networkid 31337 --raft --raftport 50000 --rpc --rpcaddr 0.0.0.0 --rpcport 22000 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft --emitcheckpoints --port 21000 &gt;&gt; node.log 2&gt;&amp;1 &amp;</code></pre><p id="c070bc84-797b-4428-bcc8-fb5b003ebbf4" class="">startnode1.shで<code>--rpc</code>を</p><p id="4da7a0fa-7607-4848-bd31-e89456a4526e" class=""><code>--unlock 0xd12073ce3A32390c39b9c4a730D8b8686fFfa68C --password /home/yusuke/intern/quorum/fromscratch/pass</code></p><p id="881e6495-9e8c-4bb9-b88c-23e37ec056f7" class="">にする必要がある。</p><p id="fdfdf02d-6bfc-428d-b295-06750015a24c" class="">これは後にプライベートネットを使用する際のためのもので、このサイト（<a href="https://qiita.com/bc_yuuuuuki/items/2e3ba6a2caa68848920e">https://qiita.com/bc_yuuuuuki/items/2e3ba6a2caa68848920e</a>）によればether送金時に<code>authentication needed: password or unlock</code>が出てしまう対処方法の一つとして、geth起動時にアンロックオプションを指定することがあげられている。</p><p id="6f8cef18-75cf-42df-aba7-456c427c4ecf" class="">
+</p></details></li></ul><p id="20e2a1ec-5ae5-411c-9f69-51ffa03ad432" class="">起動スクリプトを実行できる状態にして実行する</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3f614e55-72dd-412e-aea3-eb829fbb811b" class="code"><code class="language-Plain Text">$ chmod +x startnode1.sh
+$ ./startnode1.sh</code></pre><p id="d9f7ed23-1863-4d8a-8f3b-b7b72b2d4a38" class="">これでノードの起動が完了</p><p id="ada44e4e-1153-4cd1-a4d9-0c1e8358063e" class="">
+</p><h3 id="d3bbe2f2-e388-445c-843d-157e58e58fec" class="">ネットワークに接続</h3><p id="de6bfa2b-380b-44d5-814d-51f2ad558a6b" class="">ノードが起動したのでネットワークに接続してみましょう。<br/>gethを利用し、以下のコマンドでネットワークに接続できます。<br/></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3514eec5-5995-49c5-b5f2-c3137a92eb92" class="code"><code class="language-Plain Text">$ geth attach new-node-1/geth.ipc</code></pre><p id="22717e24-42f1-4e0b-b0c7-6e2dbc8a82f3" class="">でコマンドモードになるはず。なったらraft.clusterと打つ。</p><ul id="56e04cdd-6247-49ba-8063-1e18cce86036" class="toggle"><li><details open=""><summary>実行結果</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d2db9e7a-e25c-4696-b486-6e9c036e1bda" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth attach new-node-1/geth.ipc
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.10.3-stable-93c5f781(quorum-v22.7.5)/linux-amd64/go1.16.4
+coinbase: 0xcb368f634587cd4bfb12b42ca521963dc1f14173
+at block: 0 (Thu Jan 01 1970 09:00:00 GMT+0900 (JST))
+ datadir: /home/yusuke/intern/quorum/fromscratch/new-node-1
+ modules: admin:1.0 debug:1.0 eth:1.0 ethash:1.0 miner:1.0 net:1.0 personal:1.0 raft:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+To exit, press ctrl-d
+&gt; raft.cluster
+[{
+    hostname: &quot;127.0.0.1&quot;,
+    nodeActive: true,
+    nodeId: &quot;dd2b08e2880a2e77596803a14aaceb101917f6ed382e0dd0410a3834e98beb6f30aa4717623d96c36ac3040318ca17a69e3d8bfe5d57d03421b07eabf1c43ccc&quot;,
+    p2pPort: 21000,
+    raftId: 1,
+    raftPort: 50000,
+    role: &quot;minter&quot;
+}]</code></pre></details></li></ul><p id="ac3a95e1-705d-4926-87c7-5fd67a03072a" class="">
+</p><p id="5b5421d3-d0ea-4837-84c6-dcd5ab42634a" class="">これでノードを管理するアカウントと、一つ目のノードの起動までが終了した。</p><p id="318c7900-df09-4649-b42e-db088d1413ea" class="">次は二つ目のノードを作成する。</p></div></details><details open=""><summary style="font-weight:600;font-size:1.5em;line-height:1.3;margin:0">4．二つ目のノードを作成・ネットワークに追加</summary><div class="indented"><p id="7d3fc029-33c4-4e46-b830-a4a6fa66be15" class="">
+</p><p id="3cccb4bf-94c1-4a2d-9dd7-7fd6cab136ea" class="">以下の図の黄色いところをやる。</p><figure id="283ac85e-c6e8-48a9-ba3e-3367501c95eb" class="image" style="text-align:center"><a href="quorum_detail/Untitled%206.png"><img style="width:503px" src="quorum_detail/Untitled%206.png"/></a></figure><p id="48914b80-a97a-423e-ba21-1647bef16b6b" class="">
+</p><h3 id="4e8efb31-b917-4f03-9535-e4ed62ee1fa2" class="">「作業ディレクトリ作成」～「<code>static-nodes.json</code>作成」までのコマンド</h3><p id="a62a1952-e7bb-4372-acbd-bf23a36dc4c7" class="">一回目とほぼ同じなので説明は省略。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bd899cfd-6536-47bb-8428-2eee82d5d807" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ mkdir new-node-2
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ bootnode --genkey=nodekey2
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ cp nodekey2 new-node-2/nodekey
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ bootnode --nodekey=new-node-2/nodekey --writeaddress
+ab3d04944893ace2f427c8cfe750b06338971c77ac1dceae26173f41746066ea33a7d4334b78073894b5cb0c756866f1e8a1c960816038371532aa02f43d2afb
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ cd new-node-2
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch/new-node-2$ touch static-nodes.json</code></pre><p id="60ddc722-6642-4e0f-99a1-5d4c6b4ebffd" class="">一つ目のノード作成と異なるところ。static-node-jsonは以下のように。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="02391910-0a66-4f65-b151-4703f2d5d377" class="code"><code class="language-Plain Text">[
+  // 一つ目のノードの設定をそのまま
+  &quot;enode://0f2b20671318911937b92275b2690aaf4cf34aa180e296fcd88b8095dc225139c926c786f719cfe5f1f03bde5ee272cbd6be65ecbd934dfd9aab177816f643f3@127.0.0.1:21000?discport=0&amp;raftport=50000&quot;,
+  // 上で生成されたアドレスを利用。ポートとraptportをそれぞれ21001と50001に書き換える
+  &quot;enode://ab3d04944893ace2f427c8cfe750b06338971c77ac1dceae26173f41746066ea33a7d4334b78073894b5cb0c756866f1e8a1c960816038371532aa02f43d2afb@127.0.0.1:21001?discport=0&amp;raftport=50001&quot;,
+]</code></pre><p id="4804499d-1e71-45df-8277-bc50fec630ba" class=""><strong>ここでnew-node-1配下のstatic-node.jsonも同様に変更するのかがわからない。念のため変更して実行するとうまくいく。変更せずに、つまりnode1のenodeのみしか書かれていない状態で実行はしていない。</strong></p><p id="b4afabe9-4e4a-47c5-92f4-bd26d27c9277" class="">
+</p><h3 id="bb47f937-a2d8-42a4-b732-27c772bae305" class="">ノードの初期化と起動のためのスクリプト作成</h3><p id="573fe755-040f-4c68-8d1e-59e683d72150" class="">一回目同様初期化</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b07dc816-4583-44a2-a70f-b9a685e5ba4e" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth --datadir new-node-2 init genesis.json</code></pre><p id="fce4f391-f934-46d1-a250-c4fa89d6a9a5" class="">
+</p><p id="51e7c8e8-4d73-45bb-b71f-63207676b88f" class="">ちなみに、以下のようなエラー出たらpathの登録ができてない。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2c5075bc-7809-4aab-9113-d5aee3a4940f" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth --datadir new-node-2 init genesis.json
+
+Command &#x27;geth&#x27; not found, did you mean:
+
+  command &#x27;gth&#x27; from deb genomethreader (1.7.3+dfsg-5)
+
+Try: sudo apt install &lt;deb name&gt;</code></pre><p id="360b3dc9-1829-4f21-997e-08284b7bad11" class="">
+</p><p id="14766ef4-b3a1-4326-9095-c5d813b82f1a" class="">node2の起動スクリプトの作成</p><ul id="349c33fd-8146-4a37-b4d0-989956cac825" class="toggle"><li><details open=""><summary>startnodes2.shの中身(tessera使用時)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3f044f75-cffd-42c1-9afb-8e395117087f" class="code"><code class="language-Plain Text">#!/bin/bash
+PRIVATE_CONFIG=/home/yusuke/intern/quorum/fromscratch/new-node-2t/tm.ipc  nohup geth --datadir new-node-2 --nodiscover --verbosity 5 --networkid 31337 --raft --raftport 50001 --raftjoinexisting 2  --rpc --rpcaddr 0.0.0.0 --rpcport 22001 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft --emitcheckpoints --port 21001 2&gt;&gt;node2.log &amp;</code></pre></details></li></ul><ul id="2bd8eaf3-5921-40ad-87e3-9167ae378a87" class="toggle"><li><details open=""><summary>startnodes2.shの中身(tessera不使用時)</summary><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d7d33af4-2951-4d43-b7c6-46cdcb358015" class="code"><code class="language-Plain Text">#!/bin/bash
+PRIVATE_CONFIG=ignore nohup geth --datadir new-node-2 --nodiscover --verbosity 5 --networkid 31337 --raft --raftport 50001 --raftjoinexisting 2 --rpc --rpcaddr 0.0.0.0 --rpcport 22001 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft --emitcheckpoints --port 21001 2&gt;&gt;node2.log &amp;</code></pre></details></li></ul><p id="ba2a38be-8b64-4236-8a64-b159130a89fc" class="">起動</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f34363a7-46b3-4d1b-88c0-4e9a12809147" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ chmod +x startnode2.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ./startnode2.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ps
+  PID TTY          TIME CMD
+ 1930 pts/1    00:00:00 bash
+ 4316 pts/1    00:00:08 geth
+ 4561 pts/1    00:00:00 geth
+ 4576 pts/1    00:00:00 ps</code></pre><p id="6d21ef7f-72ba-46f5-94a1-bc772092355a" class="">gethがふたつ、つまりnode1とnode2が動いている。</p><p id="c244db95-a184-4d11-96f1-add3c98c8f69" class="">
+</p><p id="3cc57e00-013d-46cc-9eca-55cabf4f0ce7" class="">※やりたいことが終わったら、プロセスはkill。（まだネットワークの追加等あるので殺す必要はないが）</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="db0596d9-c325-4ad4-9538-0e0d3cafa201" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ps | grep geth
+ 4316 pts/1    00:00:20 geth
+ 4561 pts/1    00:00:12 geth
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ kill 4316</code></pre><p id="412fd54e-2d26-466f-b0b2-f2e8e5222126" class="">
+</p><h3 id="0b6b2947-1ebe-41d2-80c0-d81400e8d65f" class="">二つ目のノードをネットワークに追加</h3><p id="058a42a3-2ee4-451e-8d7b-0cbf42ba3805" class="">node1でネットワークに接続した後、コマンドモードみたいなのになるので、<code>raft.addPeer</code>コマンドで二つ目のノードをネットワークに追加。</p><p id="0d501350-585f-4f0f-b175-bb116218272a" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bf875037-d005-460d-880c-ce9333535b9e" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth attach new-node-1/geth.ipc
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.10.3-stable-93c5f781(quorum-v22.7.5)/linux-amd64/go1.16.4
+coinbase: 0xd12073ce3a32390c39b9c4a730d8b8686fffa68c
+at block: 0 (Thu Jan 01 1970 09:00:00 GMT+0900 (JST))
+ datadir: /home/yusuke/intern/quorum/fromscratch/new-node-1
+ modules: admin:1.0 debug:1.0 eth:1.0 ethash:1.0 miner:1.0 net:1.0 personal:1.0 raft:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+To exit, press ctrl-d
+&gt; raft.addPeer(&#x27;enode://ab3d04944893ace2f427c8cfe750b06338971c77ac1dceae26173f41746066ea33a7d4334b78073894b5cb0c756866f1e8a1c960816038371532aa02f43d2afb@127.0.0.1:21001?discport=0&amp;raftport=50001&#x27;)
+2</code></pre><p id="20633a46-b90b-47b2-8502-6178f2106ac1" class="">
+</p><p id="31768c93-322e-4f1b-8c72-bfefb77cf929" class="">その後、raftと入力し、出力結果を確認。</p><p id="8a543fbf-4af3-41a5-a13c-2de428f07f14" class="">rafrId=1でリーダーノードである一つ目のノードが、raftId=2で二つ目のノードがネットワークに接続されていることがわかる。</p><p id="c366b1f4-3e2b-4ae6-896b-16f3a1a015e1" class="">nodeActiveを見てわかる通り、今は二つ目のノードは起動されておらず一つ目のノードしか起動されていないことになっている。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="22fe6f90-d779-4742-a015-c89b06484f5c" class="code"><code class="language-Plain Text">&gt; raft
+{
+  cluster: [{
+      hostname: &quot;127.0.0.1&quot;,
+      nodeActive: false,
+      nodeId: &quot;ab3d04944893ace2f427c8cfe750b06338971c77ac1dceae26173f41746066ea33a7d4334b78073894b5cb0c756866f1e8a1c960816038371532aa02f43d2afb&quot;,
+      p2pPort: 21001,
+      raftId: 2,
+      raftPort: 50001,
+      role: &quot;verifier&quot;
+  }, {
+      hostname: &quot;127.0.0.1&quot;,
+      nodeActive: true,
+      nodeId: &quot;0f2b20671318911937b92275b2690aaf4cf34aa180e296fcd88b8095dc225139c926c786f719cfe5f1f03bde5ee272cbd6be65ecbd934dfd9aab177816f643f3&quot;,
+      p2pPort: 21000,
+      raftId: 1,
+      raftPort: 50000,
+      role: &quot;minter&quot;
+  }],
+  leader: &quot;0f2b20671318911937b92275b2690aaf4cf34aa180e296fcd88b8095dc225139c926c786f719cfe5f1f03bde5ee272cbd6be65ecbd934dfd9aab177816f643f3&quot;,
+  role: &quot;minter&quot;,
+  addLearner: function(),
+  addPeer: function(),
+  getCluster: function(callback),
+  getLeader: function(callback),
+  getRole: function(callback),
+  promoteToPeer: function(),
+  removePeer: function()
+}</code></pre></div></details><p id="3c423cce-6096-4cb5-95df-1c4818c592b3" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">コントラクトのコンパイル</summary><div class="indented"><p id="9b07291e-6f7c-4569-a89b-1f2ec78343c8" class="">
+</p><p id="59028466-00ee-4ec4-9f60-c1f176cdf169" class="">コントラクトをコンパイルするためのライブラリをインストール</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ff333df6-6e0d-4362-813f-fe30a3e9dad2" class="code"><code class="language-Plain Text">$ npm install -g solc</code></pre><p id="d3f3ed98-6a28-469f-b87b-04b53842ae68" class="">以下の内容でコントラクトを作成</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c45ae97d-eeaa-4a5c-9f28-437bb005033d" class="code"><code class="language-Plain Text">// SPDX-License-Identifier: MIT
+pragma solidity 0.8.17;
+
+contract SingleNumRegister {
+    uint storedData;
+    function set(uint x) public{
+        storedData = x;
+    }
+    function get() public view returns (uint){
+        return storedData;
+    }
+}</code></pre><p id="d4c42476-dac8-428a-ba67-1d5637256542" class="">コントラクトと同一の階層に移動し、下記コマンドを実行してコンパイル</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7003dd80-ac7c-4b86-b8d0-4e5c6cfc20b6" class="code"><code class="language-Plain Text">$ cd contracts
+$ solcjs --abi --bin SingleNumRegister.sol</code></pre><p id="d92eda08-b731-4b68-9af1-b1817f2efe15" class="">すると、abiファイルとbinファイルが出力される。</p><p id="e13182d7-1904-451d-a2cb-ed8f4843a54e" class="">これでコンパイル完了。</p></div></details><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">コントラクトのデプロイ</summary><div class="indented"><p id="ce380209-c8e3-4786-9228-5c171027f062" class="">これまでのセクションを連続して行っていた場合はいらないが、ここから始める場合は、まずはノードを起動する。こんな感じでやる。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="742b4bfd-676e-48a3-aed4-a72266921af6" class="code"><code class="language-Plain Text">
+yusuke@DESKTOP-3E7J3N1:~$ cd intern/
+yusuke@DESKTOP-3E7J3N1:~/intern$ cd quorum/
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum$ cd fromscratch/
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ export PATH=/home/yusuke/intern/quorum/build/bin:$PATH
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ chmod +x start_tessera.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ./start_tessera.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ chmod +x startnode1.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ chmod +x startnode2.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ./startnode1.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ./startnode2.sh
+yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ ps
+  PID TTY          TIME CMD
+   10 pts/0    00:00:00 bash
+ 1403 pts/0    00:01:31 java
+ 1404 pts/0    00:01:36 java
+ 2048 pts/0    00:00:01 geth
+ 2065 pts/0    00:00:00 geth
+ 2080 pts/0    00:00:00 ps
+</code></pre><p id="9c24aeb9-0780-4c9d-8b92-ddaf30ee34b3" class="">デプロイは以下の手順で行う。</p><p id="6eb431d8-eb16-4221-b10e-25bb185fa820" class="">なお、 <code>personal.unlockAccount(eth.accounts[0])</code>で初めに作ったアカウントのパスフレーズを求めている.。ちなみにパスフレーズは<code>manchester!</code>である。</p><p id="ceafc925-ca79-47a7-b482-8107f5410e95" class="">なお、startnode1.shでgeth起動時にアンロックオプションを指定している場合はこの段取りはいらない。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3c88e3b8-f234-429f-8fe2-2799ba519c21" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth attach new-node-1/geth.ipc
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.10.3-stable-93c5f781(quorum-v22.7.5)/linux-amd64/go1.16.4
+coinbase: 0xd12073ce3a32390c39b9c4a730d8b8686fffa68c
+at block: 10 (Invalid Date)
+ datadir: /home/yusuke/intern/quorum/fromscratch/new-node-1
+ modules: admin:1.0 debug:1.0 eth:1.0 ethash:1.0 miner:1.0 net:1.0 personal:1.0 quorumExtension:1.0 raft:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+To exit, press ctrl-d
+&gt; personal.unlockAccount(eth.accounts[0])
+Unlock account 0xd12073ce3a32390c39b9c4a730d8b8686fffa68c
+Passphrase:
+true</code></pre><p id="57af9a8c-27a6-4a17-be2f-354f4e02661d" class="">
+</p><p id="bea88bf7-9b35-49af-8ec4-f1fa423c1c62" class="">つぎにabiファイル、binファイルの中身をそれぞれコピーし、binとabiという変数に代入する。</p><p id="01828962-6997-4587-8eb0-330849062948" class="">コマンドの実行結果に戻り値が存在しない場合は、コンソールに「undefined」と表示されますが、コマンドは正常に終了しています。</p><p id="a0a2d3a6-6693-4f7e-aea9-b0a59b12ec3b" class="">
+</p><p id="7d0f333b-a235-484c-927f-d016dcc2f06e" class="">続けて、これらの変数を用いて下記のコマンドを実行し、コントラクトをデプロイします。</p><p id="a060d2a0-065c-40e2-aa7f-77d0e81871db" class="">今回はprivateForにnode2のアドレス（公開鍵）を指定することで、node2のみに公開するコントラクトとしてデプロイする。</p><p id="30fc1ebd-eb91-419b-abdb-66bbd62943d4" class="">node2の公開鍵は、<code>/home/yusuke/intern/quorum/fromscratch/new-node-2t/new-node-2.pub</code>にある。</p><p id="a415ebe2-1168-47b5-8445-354be4a7b85c" class="">privateForの指定先として自分自身は無理らしい。</p><p id="ab14f0a8-dd3a-45ab-8b18-d129af1a2540" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="449399e4-3b98-4b63-8a59-3448897509fe" class="code"><code class="language-Plain Text" style="white-space:pre-wrap;word-break:break-all">&gt; var bin = &quot;0x&lt;binファイルの中身&gt;&quot;
+&gt; var abi = &lt;abiファイルの中身&gt;
+&gt; var contract = eth.contract(abi)
+&gt; var myContract = contract.new({ from: eth.accounts[0], data: bin, privateFor:[&quot;&lt;new-node-2のアドレス（公開鍵）&gt;&quot;]})</code></pre><p id="fc303354-e68c-4349-bb4a-b6c90bcaa8cf" class="">実行結果</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="77e45354-5465-424f-ade0-ba08760f1e8a" class="code"><code class="language-Plain Text">&gt; var bin = &quot;0x608060405234801561001057600080fd5b50610150806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220124fa01fad4a306ed177fef33b0cb598e05cd395a47431759a884c5d35fb44fc64736f6c63430008110033&quot;
+undefined
+&gt; var abi = [{&quot;inputs&quot;:[],&quot;name&quot;:&quot;get&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;x&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;set&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}]
+undefined
+&gt; var contract = eth.contract(abi)
+undefined
+&gt; var myContract = contract.new({ from: eth.accounts[0], data: bin, privateFor:[&quot;VVkUHXSVh/TFcifyfvUwcJlUuHs3PMv2xsQQVvb+Xhk=&quot;]})
+undefined</code></pre><p id="d2396612-077a-431d-a9e0-d6eba2802f9c" class="">デプロイしたコントラクトのアドレスを確認。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b5f90e90-c6a0-46ac-b36b-10568ee38cd4" class="code"><code class="language-Plain Text">&gt; myContract.address
+&quot;0xeb7d1b6b9957543aafd1a8cb25ecdbb1753398aa&quot;</code></pre><p id="d2d17414-3e2f-4ac0-aa90-ca32276af73a" class="">
+</p></div></details><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">node1でnode2に対するプライベートトランザクションを発行</summary><div class="indented"><p id="15d2f780-7787-4bef-a95d-cbcbbbafdf55" class="">コントラクトの関数「set」をプライベートトランザクションとして呼び出す。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c223cde9-e013-461b-83f3-b2f9358e6cf9" class="code"><code class="language-Plain Text">&gt; var private = eth.contract(myContract.abi).at(myContract.address)
+&gt; private.set(11,{from:eth.accounts[0],privateFor:[&quot;&lt;new-node-2のアドレス（公開鍵）&gt;&quot;]})</code></pre><p id="e2e433ea-e811-4891-b78f-d8c98f053346" class="">実行結果</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d896c6df-d635-44ad-bfe3-988a2d5c22db" class="code"><code class="language-Plain Text">&gt; var private = eth.contract(myContract.abi).at(myContract.address)
+&gt; private.set(16,{from:eth.accounts[0],privateFor:[&quot;VVkUHXSVh/TFcifyfvUwcJlUuHs3PMv2xsQQVvb+Xhk=&quot;]})&gt; private.set(16,{from:eth.accounts[0],privateFor:[&quot;VVkUHXSV&gt; private.set(16,{from:eth.accounts[0],privateFor:[&quot;VVkUHXSVh/TFcifyfvUwcJlUuHs3PMv2xsQQVvb+Xhk=&quot;]})
+&quot;0x29df75600aace91a5c6efe53a1c0ebc70052ee0ea375bcce7b0d928058382e40&quot;</code></pre><p id="4284404a-47af-40ee-a37f-72d5d6538305" class="">トランザクションの状態を確認。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="df6c1195-bc17-4474-b2ef-4ef376548cb3" class="code"><code class="language-Plain Text">&gt; eth.getTransaction(&quot;0x29df75600aace91a5c6efe53a1c0ebc70052ee0ea375bcce7b0d928058382e40&quot;)
+{
+  blockHash: &quot;0xa05fff4530277f1bf845269767b8e2418aa41434241f20104227f898212dde80&quot;,
+  blockNumber: 12,
+  from: &quot;0xd12073ce3a32390c39b9c4a730d8b8686fffa68c&quot;,
+  gas: 45750,
+  gasPrice: 0,
+  hash: &quot;0x29df75600aace91a5c6efe53a1c0ebc70052ee0ea375bcce7b0d928058382e40&quot;,
+  input: &quot;0xfa89d24a070a24ed9769288daee617b5f33bba23a75c83a01a01d5928ae750530542eeb30e7e092ad179178a086f2fcaf5b834e9c6b230e11b6976118e4a9ff5&quot;,
+  nonce: 11,
+  r: &quot;0xd3b8e3f1c0ddf725b0b40d94c46ffa72beb05163446a97becf864f8632d2bb2f&quot;,
+  s: &quot;0x71d2b1f7b9097db896738cc62c0272326dfebd0d3ef7534a2649f5baff1f5c20&quot;,
+  to: &quot;0xeb7d1b6b9957543aafd1a8cb25ecdbb1753398aa&quot;,
+  transactionIndex: 0,
+  type: &quot;0x0&quot;,
+  v: &quot;0x26&quot;,
+  value: 0
+}</code></pre><p id="ab6648d6-7912-4e21-b557-8f9146cdad84" class="">コントラクトの関数「get」を呼び出して登録した値を参照。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7ecec18a-91fd-4e73-af7d-4660e360893f" class="code"><code class="language-Plain Text">&gt; private.get.call()
+16</code></pre><p id="8f65e6c4-4e90-4c3d-8add-cfa7dbea7079" class="">setで登録した値が返ってきている。</p></div></details><details open=""><summary style="font-weight:600;font-size:1.875em;line-height:1.3;margin:0">node2でコントラクトの状態を確認</summary><div class="indented"><p id="84d66d78-a08e-40f2-bbb4-ee250ce7b343" class="">別途node2のコンソールを開く。</p><p id="e754ccac-41af-494d-a9dd-d58bf14012da" class="">abiにはコントラクトのabiを、addressはデプロイしたコントラクトのアドレスを入れる。</p><p id="f432dd3c-aac1-4d08-8d55-72619a497855" class="">コントラクトの関数getを呼び出すと先ほどnode1で登録した値が読み取れる。</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="22933bd9-c84f-46ad-aee7-98dae7ecbc8f" class="code"><code class="language-Plain Text">&gt; var abi = &lt;abiファイルの中身&gt;
+&gt; var address = &quot;&lt;前述でデプロイしたコントラクトのアドレス&gt;&quot;
+&gt; var private = eth.contract(abi).at(address)
+&gt; private.get.call()</code></pre><p id="02dcfb5f-073e-4101-ab03-07ff24892a13" class="">実行結果</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="8b09b706-cbb9-46f2-b94c-4aa7e35f8b97" class="code"><code class="language-Plain Text">yusuke@DESKTOP-3E7J3N1:~/intern/quorum/fromscratch$ geth attach new-node-2/geth.ipc
+Welcome to the Geth JavaScript console!
+
+instance: Geth/v1.10.3-stable-93c5f781(quorum-v22.7.5)/linux-amd64/go1.16.4
+at block: 12 (Invalid Date)
+ datadir: /home/yusuke/intern/quorum/fromscratch/new-node-2
+ modules: admin:1.0 debug:1.0 eth:1.0 ethash:1.0 miner:1.0 net:1.0 personal:1.0 quorumExtension:1.0 raft:1.0 rpc:1.0 txpool:1.0 web3:1.0
+
+To exit, press ctrl-d
+&gt; var abi = [{&quot;inputs&quot;:[],&quot;name&quot;:&quot;get&quot;,&quot;outputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;stateMutability&quot;:&quot;view&quot;,&quot;type&quot;:&quot;function&quot;},{&quot;inputs&quot;:[{&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;x&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;set&quot;,&quot;outputs&quot;:[],&quot;stateMutability&quot;:&quot;nonpayable&quot;,&quot;type&quot;:&quot;function&quot;}]
+undefined
+&gt; var address = &quot;0xeb7d1b6b9957543aafd1a8cb25ecdbb1753398aa&quot;
+undefined
+&gt; var private = eth.contract(abi).at(address)
+undefined
+&gt; private.get.call()
+16</code></pre><p id="60a973ef-6ccf-4ff7-9869-c9e991f2e9e7" class="">もしここでnode3から同じようにやると、最後の出力は<code>0</code>になる。node3からはプライベートトランザクションはよみとれないようになっている。</p></div></details><p id="567448ae-629d-4170-bafb-161a970cd55b" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
