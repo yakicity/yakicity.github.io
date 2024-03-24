@@ -48,7 +48,7 @@ export type Work = {
       imageSrc: ["/works/fight/fight.png"],
       subImageSrc: [""],
       subImageDescription: [""],
-      githublink : "",
+      githublink : "https://github.com/yakicity/fighting",
       movielink : "https://www.youtube.com/watch?v=N4F645E8C7Y",
       detaillink: [""],
       abst: "スマブラ風ゲームを作成し，強化学習でゲームAIを作成した．",
