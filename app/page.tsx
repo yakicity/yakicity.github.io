@@ -6,7 +6,7 @@ export default function Home() {
       <div>
         <section className="body-font">
           <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={100} height={100} src="/mypicture.png"/>
+            <Image className="lg:w-1/5 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={50} height={50} src="/mypic_circle.png"/>
             {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/> */}
             <div className="text-center lg:w-2/3 w-full">
               <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
@@ -42,6 +42,9 @@ export default function Home() {
                         <LanguageCard level={4} src={"/icons/python.png"}>
                           Python
                         </LanguageCard>
+                        <LanguageCard level={2} src={"/icons/pytorch.png"}>
+                          Pytorch
+                        </LanguageCard>
                         <LanguageCard level={2} src={"/icons/unity.png"}>
                           Unity
                         </LanguageCard>
@@ -57,7 +60,7 @@ export default function Home() {
                         <LanguageCard level={1} src={"/icons/react.png"}>
                           React
                         </LanguageCard>
-                        <LanguageCard level={1} src={"/icons/ts.png"}>
+                        <LanguageCard level={1} src={"/icons/solidity.svg"}>
                           Solidity
                         </LanguageCard>
                       </div>
@@ -76,7 +79,7 @@ export default function Home() {
                         <span className="font-semibold title-font text-gray-700">Interests</span>
                       </div>
                       <div className="md:flex-grow text-gray-900">
-                        <h2 className="text-left leading-relaxed mb-2">HCI × SkillTraining, Reinforcement Learning × Game, Machine Learning</h2>
+                        <h2 className="text-left leading-relaxed mb-2">HCI × SkillTraining, Reinforcement Learning × Soccer, Machine Learning</h2>
                       </div>
                     </div>
                   </div>
