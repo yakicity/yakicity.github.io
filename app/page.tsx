@@ -6,7 +6,7 @@ export default function Home() {
       <div>
         <section className="body-font">
           <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            <Image className="lg:w-1/5 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' width={50} height={50} src="/mypic_circle.png"/>
+            <Image className="lg:w-2/5 md:w-2/5 mb-10 object-cover object-center rounded" alt='logo' width={50} height={50} src="/mypic_genova.jpg"/>
             {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/> */}
             <div className="text-center lg:w-2/3 w-full">
               <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
@@ -17,10 +17,11 @@ export default function Home() {
                         <span className="title-font text-gray-700">Information</span>
                       </div>
                       <div className="md:flex-grow text-gray-900">
-                        <h2 className="leading-relaxed text-left ">東京工業大学 情報理工学院 情報工学系学部4年生</h2>
+                        <h2 className="leading-relaxed text-left ">東京工業大学 情報理工学院 情報工学系 知能情報コース M1</h2>
                         {/* <h2 className="text-2xl font-medium text-gray-900 title-font mb-2">東京工業大学 情報理工学院 情報工学系学部4年生</h2> */}
-                        <p className="leading-relaxed text-left ">研究分野: HCI(Human-Computer-interaction)</p>
-                        <p className="leading-relaxed text-left ">研究内容: MR縫合訓練システムにおける器具姿勢教示手法</p>
+                        <p className="leading-relaxed text-left ">研究分野(B4): HCI(Human-Computer-interaction)</p>
+                        <p className="leading-relaxed text-left ">研究内容(B4): MR縫合訓練システムにおける器具姿勢教示手法</p>
+                        <p className="leading-relaxed text-left ">研究分野(M1): 強化学習</p>
                         {/* https://www.wiss.org/WISS2023Proceedings/data/2-B03.pdf */}
                       </div>
                     </div>

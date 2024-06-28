@@ -4,6 +4,7 @@ import Image from "next/image";
 export default function PaperCard({
   id,
   title,
+  abst,
   conference,
   track,
   imageSrc,
@@ -11,6 +12,7 @@ export default function PaperCard({
 }: {
   id: string;
   title: string;
+  abst: string;
   conference: string;
   track: string;
   imageSrc: string;
@@ -31,6 +33,7 @@ export default function PaperCard({
         <div className="p-6">
           {/* <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">{title}</h2> */}
           <h1 className="title-font text-lg font-medium text-gray-900 mb-3">{title}</h1>
+          <p className="leading-relaxed mb-3">{abst}</p>
         </div>
         <div className="flex items-center flex-wrap ">
           {category.map((c,index) => (

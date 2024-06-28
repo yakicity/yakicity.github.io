@@ -19,8 +19,8 @@ export default function Works() {
         </div>
         <div className="container px-5 py-4 mx-auto">
           <div className="flex flex-wrap -m-4">
-            {paper.map(({ id, title, imageSrc, conference,track,category}) => (
-              <PaperCard key={id} id={id} title={title} imageSrc={imageSrc[0]} conference={conference} track={track} category={category}></PaperCard>
+            {paper.map(({ id, title, abst, imageSrc, conference,track,category}) => (
+              <PaperCard key={id} id={id} abst={abst} title={title} imageSrc={imageSrc[0]} conference={conference} track={track} category={category}></PaperCard>
             ))}
           </div>
         </div>
