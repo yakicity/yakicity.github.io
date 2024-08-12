@@ -6,7 +6,7 @@ export default function Home() {
       <div>
         <section className="body-font">
           <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            <Image className="lg:w-2/5 md:w-2/5 mb-10 object-cover object-center rounded" alt='logo' width={50} height={50} src="/mypic_genova.jpg"/>
+            <Image className="lg:w-2/5 md:w-2/5 mb-10 object-cover object-center rounded" alt='logo' width={500} height={500} src="/mypic_genova.jpg"/>
             {/* <Image className="lg:w-1/4 md:w-2/5 w-5/6 mb-10 object-cover object-center rounded" alt='logo' src={mypic}/> */}
             <div className="text-center lg:w-2/3 w-full">
               <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">Yusuke Kojima  小島 悠介</h1>
@@ -71,8 +71,9 @@ export default function Home() {
                         <span className="font-semibold title-font text-gray-700">Interns</span>
                       </div>
                       <div className="md:flex-grow text-gray-900">
-                        <h2 className="text-left leading-relaxed mb-2">Onplanetz株式会社(2022/3 ~ present, Machine Learning Engineer)</h2>
-                        <h2 className="text-left leading-relaxed mb-2">IBS Data Science Group, KAIST(2022/8 ~ 2022/9, Research Internship)</h2>
+                        <h2 className="text-left leading-relaxed mb-2">Onplanetz株式会社 (2022/3 ~ present, Machine Learning Engineer)</h2>
+                        <h2 className="text-left leading-relaxed mb-2">IBS Data Science Group, KAIST (2022/8 ~ 2022/9, Research Internship)</h2>
+                        <h2 className="text-left leading-relaxed mb-2">エムスリー株式会社 (2024/7, データサイエンティストインターン(5days))</h2>
                       </div>
                     </div>
                     <div className="py-8 flex flex-wrap md:flex-nowrap">
