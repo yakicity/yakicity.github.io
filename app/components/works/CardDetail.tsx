@@ -96,7 +96,10 @@ export default function CardDetail({ data }: { data: Work }) {
               <h3 className="text-[1.5rem] w-[10rem] text-gray-900 border-b border-solid border-gray-400 mt-6 mb-[0.5rem]">
                 Implementation
               </h3>
-              <p>{data.implementation}</p>
+              {/* <p>{data.implementation}</p> */}
+              {data.implementation.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
             </div>
             ) : (
               ""
