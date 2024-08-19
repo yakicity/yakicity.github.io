@@ -49,7 +49,7 @@ export type Work = {
       subImageSrc: [""],
       subImageDescription: [""],
       githublink : "https://github.com/yakicity/fighting",
-      movielink : "https://www.youtube.com/watch?v=OjROqpjT-_I",
+      movielink : "https://www.youtube.com/watch?v=XWDaZa5xVA0",
       detaillink: [""],
       abst: "強化学習・模倣学習でゲームAIを作成した。",
       category: ["Python","Pytorch","Pygame"]
