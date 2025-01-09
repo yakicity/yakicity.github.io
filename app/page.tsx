@@ -74,6 +74,7 @@ export default function Home() {
                         <h2 className="text-left leading-relaxed mb-2">Onplanetz株式会社 (2022/3 ~ present, Machine Learning Engineer)</h2>
                         <h2 className="text-left leading-relaxed mb-2">IBS Data Science Group, KAIST (2022/8 ~ 2022/9, Research Internship)</h2>
                         <h2 className="text-left leading-relaxed mb-2">エムスリー株式会社 (2024/7, データサイエンティストインターン(5days))</h2>
+                        <h2 className="text-left leading-relaxed mb-2">株式会社リクルート (2024/11 ~ 2024/12, データサイエンティストインターン)</h2>
                       </div>
                     </div>
                     <div className="py-8 flex flex-wrap md:flex-nowrap">
